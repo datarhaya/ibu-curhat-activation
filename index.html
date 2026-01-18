@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>i-BU - Teman Curhatmu</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #041319;
+            --white: #ffffff;
+            --accent-blue: #A8E1FF;
+        }
+        
+        @font-face {
+            font-family: 'AvantGarde';
+            src: url('Assets/fonts/ITCAvantGardeStd-Bk.woff2') format('woff2');
+            font-weight: 400;
+        }
+
+        @font-face {
+            font-family: 'AvantGarde';
+            src: url('Assets/fonts/ITCAvantGardeStd-Demi.otf') format('opentype');
+            font-weight: 700;
+        }
+        
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'AvantGarde', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--white);
+            height: 100vh; width: 100vw;
+            overflow: hidden;
+        }
+
+        .app-container { width: 100%; height: 100vh; position: relative; }
+
+        .landing-screen { width: 100vw; height: 100vh; position: relative; cursor: pointer; background: black; }
+        .video-container, .video-placeholder { width: 100%; height: 100%; object-fit: cover; }
+        .unmute-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); z-index: 10; }
+
+        .loading-ai-image { height: 100vh; width: auto; position: absolute; left: 50%; transform: translateX(-50%); z-index: 1; transition: opacity 0.5s ease; }
+        .loading-center-group { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 40px; }
+        .progress-bar-container { width: 280px; height: 30px; border: 1px solid var(--white); padding: 4px; background: transparent; }
+        .progress-fill { height: 100%; background: var(--white); transition: width 0.1s linear; }
+        .loading-text-finished { font-weight: 700; font-size: 40px; letter-spacing: 6px; text-transform: uppercase; }
+
+        .screen { width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; box-sizing: border-box; position: relative; background-color: var(--bg-dark); }
+
+        .header-elements { position: absolute; top: 40px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 20; }
+        .header-left { display: flex; flex-direction: column; gap: 8px; }
+        .powered-by { font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
+        .btn-reset { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 4px 12px; border-radius: 4px; font-size: 14px; cursor: pointer; text-transform: uppercase; width: fit-content; }
+        .top-logo { width: 120px; height: auto; cursor: pointer; }
+
+        .intro-transcript-wrapper { width: 100%; max-width: 60%; display: flex; flex-direction: column; align-items: flex-start; margin: 0 auto; }
+        .transcript-text { font-size: 64px; line-height: 1.4; font-weight: 400; text-align: left; white-space: pre-wrap; margin: 0; }
+        .blue-title { color: var(--accent-blue); font-weight: 700; font-size: 52px; text-align: left; width: 100%; }
+
+        .btn-selanjutnya-outlined {
+            background: transparent; border: 1px solid var(--accent-blue); 
+            padding: 18px 60px; border-radius: 100px;
+            color: var(--accent-blue); font-family: 'AvantGarde', sans-serif; font-weight: 700; font-size: 48px; text-transform: uppercase;
+            letter-spacing: 12px; padding-right: 48px; 
+            box-shadow: 0 0 0 10px var(--bg-dark), 0 0 0 16px rgba(168, 225, 255, 0.3), 0 0 12px rgba(168, 225, 255, 0.2);
+            cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin-top: 60px; outline: none;
+        }
+
+        .name-input-container { width: 100%; max-width: 60%; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+        .identitas-title {
+            font-size: 64px;
+            font-weight: 400;
+            transition: all 0.5s ease;
+            margin: 0;
+            text-align: center;
+        }
+
+        .identitas-title.finished {
+            font-weight: 700; /* Demi weight */
+            color: var(--white);
+        }
+
+        /* Optional: add a slight glow to the greeting name */
+        .identitas-title.finished span {
+            color: var(--accent-blue);
+        }
+        .identitas-subtext { font-size: 52px; font-weight: 400; line-height: 1.4; text-align: center; margin-bottom: 20px; }
+        .name-input-box { width: 100%; background: transparent; border: 1px solid rgba(168, 225, 255, 0.4); padding: 25px; border-radius: 20px; color: var(--white); font-family: 'AvantGarde', sans-serif; font-size: 48px; text-align: center; text-transform: uppercase; letter-spacing: 4px; outline: none; transition: border-color 0.3s ease; }
+        .name-input-box:focus { border-color: var(--accent-blue); }
+
+        .name-greeting { color: var(--accent-blue); font-weight: 700; font-size: 52px; margin-bottom: 20px; text-align: left; }
+        .privacy-text { font-size: 48px; font-weight: 400; line-height: 1.5; text-align: left; color: var(--white); margin-bottom: 40px; }
+
+        .category-container { width: 100%; max-width: 75%; display: flex; flex-direction: column; align-items: center; }
+        .category-title { color: var(--accent-blue); font-weight: 700; font-size: 52px; text-align: center; margin-bottom: 40px; line-height: 1.3; }
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px; /* Increased gap for the wider layout */
+            width: 100%;
+        }
+        .category-card {
+            background: transparent;
+            border: 1px solid var(--accent-blue);
+            border-radius: 40px; /* More rounded to match design */
+            padding: 60px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            
+            /* Double ring and glow effect */
+            box-shadow: 
+                0 0 0 10px var(--bg-dark),               /* Inner gap */
+                0 0 0 14px rgba(168, 225, 255, 0.3),    /* Outer ring */
+                0 0 12px rgba(168, 225, 255, 0.1);      /* Soft glow */
+        }
+        .category-icon {
+            width: 140px; /* Larger icon size */
+            height: auto; /* Height auto to prevent squishing */
+            max-height: 140px;
+            object-fit: contain;
+            margin-bottom: 30px;
+            display: block;
+        }
+        .category-label {
+            font-size: 32px; /* Slightly adjusted for better hierarchy */
+            font-weight: 400;
+            color: var(--white);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .pre-record-container { width: 100%; max-width: 85%; display: flex; flex-direction: column; align-items: center; margin-top: 40px; }
+        .pre-record-title { font-weight: 700; font-size: 48px; color: var(--white); margin-bottom: 30px; text-align: center; }
+        .pre-record-box { width: 100%; border: 1px solid rgba(168, 225, 255, 0.4); border-radius: 30px; padding: 60px 40px; background: rgba(255, 255, 255, 0.02); }
+        .pre-record-transcript { font-size: 42px; line-height: 1.5; color: var(--white); text-align: left; white-space: pre-wrap; margin: 0; }
+
+        .pre-record-marquee { width: 100%; background-color: #A8E1FF; padding: 24px 0; overflow: hidden; position: relative; margin-top: 240px; z-index: 5; }
+        .marquee-text-dark { display: inline-block; white-space: nowrap; padding-left: 100%; animation: marquee-scroll 25s linear infinite; color: #041319; font-size: 28px; font-weight: 400; }
+        @keyframes marquee-scroll { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        .pre-record-content-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+
+        .ripple-container { position: relative; width: 600px; height: 600px; display: flex; justify-content: center; align-items: center; margin-bottom: -40px; }
+        .ai-core { position: relative; z-index: 10; width: 350px; height: 350px; background: var(--bg-dark); border: 1px solid var(--accent-blue); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(168, 225, 255, 0.15); }
+        .core-text-block { width: 100%; max-width: 280px; text-align: center; margin-top: 20px; }
+        .listening-text { font-size: 24px; font-weight: 400; line-height: 1.2; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 2px; }
+        
+        /* Updated Ripple Animation */
+        .ripple { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 2px solid var(--accent-blue); pointer-events: none; animation: ripple-large-animation 6s ease-out infinite; }
+        .ripple:nth-child(1) { width: 360px; height: 360px; animation-delay: 0s; }
+        .ripple:nth-child(2) { width: 360px; height: 360px; animation-delay: 1.5s; }
+        .ripple:nth-child(3) { width: 360px; height: 360px; animation-delay: 3s; }
+        .ripple:nth-child(4) { width: 360px; height: 360px; animation-delay: 4.5s; }
+        .ripple:nth-child(5) { width: 360px; height: 360px; animation-delay: 6s; }
+
+        @keyframes ripple-large-animation {
+            0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(3); } /* Higher scale to touch sides */
+        }
+
+        .timer { font-size: 24px; font-weight: 700; letter-spacing: 2px; color: var(--white); margin-top: 10px; margin-bottom: 200px; } /* Added margin-bottom 200px */
+
+        .btn-akhiri-yellow {
+            background: transparent; border: 1px solid #F2CA66; padding: 18px 60px; border-radius: 100px;
+            color: #F2CA66; font-family: 'AvantGarde', sans-serif; font-weight: 700; font-size: 48px; text-transform: uppercase;
+            letter-spacing: 12px; padding-right: 48px; 
+            box-shadow: 0 0 0 10px var(--bg-dark), 0 0 0 16px rgba(242, 202, 102, 0.2), 0 0 12px rgba(242, 202, 102, 0.2);
+            cursor: pointer; transition: all 0.4s; outline: none;
+        }
+
+        @keyframes loading-fill {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        /* Ensure the Powered by Spiko looks interactive */
+        .powered-by:hover {
+            color: var(--accent-blue);
+            transition: color 0.3s ease;
+        }
+
+        .fade-in { animation: fadeIn 1s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const TRANSCRIPT_INTRO_1 = [
+            { text: "Halo ", delay: 900 }, { text: "aku i-BU.", delay: 600 }, { text: "\n", delay: 100 },
+            { text: "Teman curhat kamu.", delay: 700 }, { text: "\nDi sini,", delay: 700 }, { text: " kamu nggak sendirian.", delay: 1000 },
+            { text: "\n\n", delay: 100 }, { text: "Di sini,", delay: 300 }, { text: " kamu boleh jujur", delay: 500 }, { text: " apa adanya.", delay: 500 }
+        ];
+
+        const TRANSCRIPT_INTRO_2 = [
+            { text: "Ada hal", delay: 200 }, { text: " yang sulit kamu ceritakan kepada", delay: 200 }, { text: " siapa pun?", delay: 1200 },
+            { text: "\n\nTarik napas sebentar.......", delay: 1300 }, { text: "\n\nTempat ini", delay: 300 }, { text: " aman buat kamu.", delay: 800 },
+            { text: "\n\ni-BU", delay: 500 }, { text: " siap mendengarkan.", delay: 500 },
+        ];
+
+        const TRANSCRIPT_NAME_INPUT = [ { text: "Kenalan Dulu, Yuk", delay: 500 } ];
+
+        const TRANSCRIPT_RECORDING_INTRO = [
+            { text: "", delay: 1400 }, { text: "Nggak perlu disusun.", delay: 1000 }, { text: "\nNggak perlu ditahan.", delay: 1000 },
+            { text: "\n\nBicara aja…", delay: 800 }, { text: " seperti kamu sedang", delay: 300 }, { text: " bicara pada diri sendiri.", delay: 1200 },
+            { text: "\n\nKalau kamu berhenti", delay: 400 }, { text: " di tengah jalan,", delay: 600 }, { text: " nggak apa-apa.", delay: 1000 },
+            { text: "\n\nKalau suara kamu gemetar,", delay: 700 }, { text: " itu juga nggak apa-apa.", delay: 1200 },
+            { text: "\n\nAmbil waktu sebanyak", delay: 400 }, { text: " yang kamu butuhkan.", delay: 1500 }
+        ];
+
+        const ManualTypewriter = ({ words, onComplete }) => {
+            const [displayedText, setDisplayedText] = React.useState("");
+            const [wordIndex, setWordIndex] = React.useState(0);
+            const [charIndex, setCharIndex] = React.useState(0);
+            const [isFinished, setIsFinished] = React.useState(false);
+
+            React.useEffect(() => {
+                if (isFinished) return;
+                if (wordIndex < words.length) {
+                    const currentWord = words[wordIndex].text;
+                    if (charIndex < currentWord.length) {
+                        const timeout = setTimeout(() => {
+                            setDisplayedText(prev => prev + currentWord[charIndex]);
+                            setCharIndex(prev => prev + 1);
+                        }, 40);
+                        return () => clearTimeout(timeout);
+                    } else {
+                        const timeout = setTimeout(() => {
+                            setWordIndex(prev => prev + 1);
+                            setCharIndex(0);
+                        }, words[wordIndex].delay || 300);
+                        return () => clearTimeout(timeout);
+                    }
+                } else {
+                    setIsFinished(true);
+                    if (onComplete) onComplete();
+                }
+            }, [wordIndex, charIndex, words, isFinished, onComplete]);
+
+            return <span>{displayedText}{!isFinished && <span className="typing-cursor">|</span>}</span>;
+        };
+
+        function App() {
+            const [screen, setScreen] = React.useState('landing');
+            const [loadingProgress, setLoadingProgress] = React.useState(0);
+            const [transcriptFinished, setTranscriptFinished] = React.useState(false);
+            const [userName, setUserName] = React.useState("");
+            const [isVoiceActive, setIsVoiceActive] = React.useState(false);
+            const [showUnmuteOverlay, setShowUnmuteOverlay] = React.useState(true);
+            const [selectedCategory, setSelectedCategory] = React.useState(null);
+            const [isRecording, setIsRecording] = React.useState(false);
+            const [seconds, setSeconds] = React.useState(0);
+
+            const audioRef = React.useRef(null);
+            const landingVideoRef = React.useRef(null);
+
+            const [finalVideoUrl, setFinalVideoUrl] = React.useState("");
+
+            const [showNameGreeting, setShowNameGreeting] = React.useState(false);
+
+            // Logic to handle the transition from Closing to Video
+            React.useEffect(() => {
+                if (screen === 'closing-transition') {
+                    // 1. Pick the Video based on Category
+                    // Note: Check if your folder is "assets" or "Assets" - using lowercase to match your landing video
+                    const videoDian = "Assets/video/closing-dian.mp4"; 
+                    const videoRinggo = "Assets/video/closing-ringgo.mp4";
+                    
+                    let pickedVideo = "";
+                    if (selectedCategory === 'ibu') {
+                        pickedVideo = videoDian;
+                    } else if (selectedCategory === 'bapak') {
+                        pickedVideo = videoRinggo;
+                    } else {
+                        // Randomize for Keluarga or Anak
+                        pickedVideo = Math.random() < 0.5 ? videoDian : videoRinggo;
+                    }
+                    
+                    setFinalVideoUrl(pickedVideo);
+
+                    // 2. Wait 4 seconds then show video
+                    const timer = setTimeout(() => {
+                        setScreen('final-video');
+                    }, 4000);
+                    
+                    return () => clearTimeout(timer);
+                }
+            }, [screen, selectedCategory]);
+
+            const playAudio = (path) => {
+                if (audioRef.current) {
+                    audioRef.current.pause();
+                    audioRef.current.src = path;
+                    audioRef.current.play().then(() => setIsVoiceActive(true)).catch(() => {});
+                }
+            };
+
+            const resetApp = () => {
+                if (audioRef.current) audioRef.current.pause();
+                setScreen('landing');
+                setLoadingProgress(0);
+                setTranscriptFinished(false);
+                setUserName("");
+                setIsVoiceActive(false);
+                setShowUnmuteOverlay(true);
+                setSelectedCategory(null);
+                setIsRecording(false);
+                setSeconds(0);
+                setFinalVideoUrl(""); // Reset video choice
+            };
+
+            const skipToNext = () => {
+                if (screen === 'intro1') {
+                    setTranscriptFinished(false);
+                    setScreen('intro2');
+                    playAudio("Assets/audio/eti-ibucurhat-audio4-adahalyangsulitkamuceritakan.mp3");
+                } else if (screen === 'intro2') {
+                    setTranscriptFinished(false);
+                    setScreen('name-input');
+                    playAudio("Assets/audio/eti-ibucurhat-audio6-kenalanduluyuk.mp3");
+                } else if (screen === 'name-input' && userName.trim()) {
+                    setScreen('data-confirmation');
+                } else if (screen === 'data-confirmation') {
+                    setScreen('category-selection');
+                } else if (screen === 'pre-record') {
+                    setScreen('record-page');
+                    playAudio("Assets/audio/eti-ibucurhat-audio8-mulairekam.mp3");
+                    setIsRecording(true);
+                }
+            };
+
+            const startLoadingSequence = () => {
+                setScreen('loading-page');
+                let prog = 0;
+                const interval = setInterval(() => {
+                    prog += 2;
+                    setLoadingProgress(prog);
+                    if (prog >= 100) {
+                        clearInterval(interval);
+                        playAudio("Assets/audio/eti-ibucurhat-audio1-ibuadauntukmu.mp3");
+                        setTimeout(() => { setScreen('intro1'); playAudio("Assets/audio/eti-ibucurhat-audio2-HaloakuiBU.mp3"); }, 3000);
+                    }
+                }, 50);
+            };
+
+            React.useEffect(() => {
+                let interval;
+                if (screen === 'record-page') { interval = setInterval(() => setSeconds(prev => prev + 1), 1000); }
+                else { setSeconds(0); }
+                return () => clearInterval(interval);
+            }, [screen]);
+
+            const formatTime = (totalSeconds) => {
+                const mins = Math.floor(totalSeconds / 60);
+                const secs = totalSeconds % 60;
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            };
+
+            /* In the Header Component */
+            const Header = () => (
+                <div className="header-elements">
+                    <div className="header-left">
+                        <div 
+                            className="powered-by" 
+                            onClick={resetApp} 
+                            style={{ cursor: 'pointer', transition: 'color 0.3s' }}
+                        >
+                            Powered by Spiko
+                        </div>
+                    </div>
+                    <img 
+                        src="Assets/image/IBU-Logo.png" 
+                        className="top-logo" 
+                        alt="Logo" 
+                        onClick={skipToNext} 
+                    />
+                </div>
+            );
+
+            return (
+                <div className="app-container">
+                    <audio ref={audioRef} onEnded={() => setIsVoiceActive(false)} style={{ display: 'none' }} />
+
+                    {screen === 'landing' && (
+                        <div className="landing-screen" onClick={() => showUnmuteOverlay ? (setShowUnmuteOverlay(false), landingVideoRef.current.muted=false) : startLoadingSequence()}>
+                            <video ref={landingVideoRef} className="video-placeholder" src="Assets/ETI-motion-poster.mp4" autoPlay loop muted playsInline />
+                            {showUnmuteOverlay && <div className="unmute-overlay"><p style={{ letterSpacing: '2px', fontWeight: '300' }}>🔊 Ketuk untuk dengar suara</p></div>}
+                        </div>
+                    )}
+
+                    {screen === 'loading-page' && (
+                        <div className="screen">
+                            <img src="Assets/image/AI-IBU-loading.png" className="loading-ai-image" style={{ opacity: 0.05 + (loadingProgress/100)*0.95 }} />
+                            <div className="loading-center-group">
+                                <img src="Assets/image/IBU-Logo.png" style={{ width: '280px' }} />
+                                {loadingProgress < 100 ? <div className="progress-bar-container"><div className="progress-fill" style={{ width: `${loadingProgress}%` }} /></div> : <div className="loading-text-finished">Ada Untukmu</div>}
+                            </div>
+                        </div>
+                    )}
+
+                    {(screen === 'intro1' || screen === 'intro2' || screen === 'name-input' || screen === 'data-confirmation' || screen === 'category-selection' || screen === 'pre-record' || screen === 'record-page') && <Header />}
+
+                    {screen === 'intro1' && (
+                        <div className="screen" key="intro1">
+                            <div className="intro-transcript-wrapper"><p className="transcript-text"><ManualTypewriter words={TRANSCRIPT_INTRO_1} onComplete={() => setTranscriptFinished(true)} /></p></div>
+                            {transcriptFinished && !isVoiceActive && <div className="fade-in"><button className="btn-selanjutnya-outlined" onClick={() => { setTranscriptFinished(false); playAudio("Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3"); const end = () => { audioRef.current.removeEventListener('ended', end); setTimeout(() => { setScreen('intro2'); playAudio("Assets/audio/eti-ibucurhat-audio4-adahalyangsulitkamuceritakan.mp3"); }, 1000); }; audioRef.current.addEventListener('ended', end); }}>Selanjutnya</button></div>}
+                        </div>
+                    )}
+
+                    {screen === 'intro2' && (
+                        <div className="screen" key="intro2">
+                            <div className="intro-transcript-wrapper"><p className="transcript-text"><ManualTypewriter words={TRANSCRIPT_INTRO_2} onComplete={() => setTranscriptFinished(true)} /></p></div>
+                            {transcriptFinished && !isVoiceActive && <button className="btn-selanjutnya-outlined" onClick={() => { setTranscriptFinished(false); playAudio("Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3"); const end = () => { audioRef.current.removeEventListener('ended', end); setTimeout(() => { setScreen('name-input'); setTranscriptFinished(false); playAudio("Assets/audio/eti-ibucurhat-audio6-kenalanduluyuk.mp3"); }, 1000); }; audioRef.current.addEventListener('ended', end); }}>Selanjutnya</button>}
+                        </div>
+                    )}
+
+                    {screen === 'name-input' && (
+                        <div className="screen" key="name-screen">
+                            <Header />
+                            <div className="name-input-container">
+                                {/* 1. Dynamic Title: Swaps from prompt to Greeting */}
+                                <h1 className={`identitas-title ${transcriptFinished ? 'finished' : ''}`}>
+                                    {!showNameGreeting ? (
+                                        <ManualTypewriter 
+                                            words={TRANSCRIPT_NAME_INPUT} 
+                                            onComplete={() => setTranscriptFinished(true)} 
+                                        />
+                                    ) : (
+                                        `Halo ${userName}, salam kenal`
+                                    )}
+                                </h1>
+
+                                {/* 2. Hide input fields once button is clicked to focus on the greeting */}
+                                {transcriptFinished && !showNameGreeting && (
+                                    <div className="fade-in" style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <p className="identitas-subtext" style={{ marginTop: '20px', marginBottom: '40px' }}>
+                                            Kamu lebih nyaman<br/>dipanggil apa?
+                                        </p>
+                                        
+                                        <input 
+                                            type="text" 
+                                            className="name-input-box" 
+                                            placeholder="ISI NAMA KAMU..." 
+                                            value={userName} 
+                                            maxLength={15} 
+                                            onChange={(e) => setUserName(e.target.value)} 
+                                            autoFocus 
+                                        />
+                                        
+                                        {userName.trim().length > 0 && (
+                                            <button 
+                                                className="btn-selanjutnya-outlined" 
+                                                style={{ marginTop: '40px' }} 
+                                                onClick={() => {
+                                                    // Trigger the greeting text immediately
+                                                    setShowNameGreeting(true);
+                                                    
+                                                    playAudio("Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3");
+                                                    
+                                                    const end = () => {
+                                                        audioRef.current.removeEventListener('ended', end);
+                                                        setTimeout(() => {
+                                                            // Reset greeting state for next time (if reset happens) 
+                                                            // and move to next screen
+                                                            setScreen('data-confirmation');
+                                                            setShowNameGreeting(false); 
+                                                        }, 1000);
+                                                    };
+                                                    audioRef.current.addEventListener('ended', end);
+                                                }}
+                                            >
+                                                Selanjutnya
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {screen === 'data-confirmation' && (
+                        <div className="screen" key="confirm-screen">
+                            <div className="intro-transcript-wrapper"><h2 className="name-greeting fade-in">Hai {userName},</h2><p className="privacy-text fade-in" style={{ animationDelay: '0.3s' }}>Data ini hanya untuk membuat<br/>pengalamanmu terasa lebih personal.<br/><br/>Ceritamu tetap milikmu sepenuhnya.</p></div>
+                            <div className="fade-in" style={{ animationDelay: '0.6s' }}><button className="btn-selanjutnya-outlined" onClick={() => { playAudio("Assets/audio/eti-ibucurhat-audio5-mulaicurhat.mp3"); const end = () => { audioRef.current.removeEventListener('ended', end); setTimeout(() => setScreen('category-selection'), 500); }; audioRef.current.addEventListener('ended', end); }}>Mulai Curhat</button></div>
+                        </div>
+                    )}
+
+                    {screen === 'category-selection' && (
+                        <div className="screen" key="category-screen">
+                            <div className="category-container fade-in">
+                                <h2 className="category-title">{userName}, kamu mau<br/>curhat tentang siapa?</h2>
+                                <div className="category-grid">
+                                    {['ibu', 'bapak', 'anak', 'keluarga'].map(id => (
+                                        <div key={id} className="category-card" onClick={() => { setSelectedCategory(id); playAudio("Assets/audio/eti-ibucurhat-audio7-sekarangceritakansemua.mp3"); setScreen('pre-record'); }}>
+                                            <img src={`Assets/image/icon-${id}.png`} className="category-icon" />
+                                            <span className="category-label">{id}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {screen === 'pre-record' && (
+                        <div className="screen" key="pre-record-phase" style={{ padding: 0 }}>
+                            <div className="pre-record-marquee"><div className="marquee-text-dark">Terima kasih sudah melangkah sejauh ini. &nbsp;&nbsp; • &nbsp;&nbsp; Terima kasih sudah melangkah sejauh ini.</div></div>
+                            <div className="pre-record-content-wrapper"><div className="pre-record-container fade-in">
+                                <h1 className="pre-record-title">Sekarang, kamu ceritain aja ya :)</h1>
+                                <div className="pre-record-box"><p className="pre-record-transcript"><ManualTypewriter words={TRANSCRIPT_RECORDING_INTRO} onComplete={() => setIsVoiceActive(false)} /></p></div>
+                                <div style={{ minHeight: '160px', marginTop: '40px' }}>{!isVoiceActive && <button className="btn-selanjutnya-outlined" onClick={() => { playAudio("Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3"); const end = () => { audioRef.current.removeEventListener('ended', end); setScreen('record-page'); playAudio("Assets/audio/eti-ibucurhat-audio8-mulairekam.mp3"); setIsRecording(true); }; audioRef.current.addEventListener('ended', end); }}>Selanjutnya</button>}</div>
+                            </div></div>
+                        </div>
+                    )}
+
+                    {screen === 'record-page' && (
+                        <div className="screen" key="record-active" style={{ padding: 0 }}>
+                            <div className="pre-record-marquee"><div className="marquee-text-dark">Terima kasih sudah melangkah sejauh ini &nbsp;&nbsp; • &nbsp;&nbsp; Terima kasih sudah melangkah sejauh ini</div></div>
+                            <div className="pre-record-content-wrapper"><div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <div className="ripple-container">
+                                    <div className="ripple"></div>
+                                    <div className="ripple"></div>
+                                    <div className="ripple"></div>
+                                    <div className="ripple"></div>
+                                    <div className="ripple"></div>
+                                    <div className="ai-core">
+                                        <img src="Assets/image/IBU-Logo.png" style={{ width: '150px' }} /><div className="core-text-block"><p className="listening-text">Mendengarkan<br/>Curhat Kamu</p></div></div></div>
+                                <div className="timer">{formatTime(seconds)}</div>
+                                <button 
+                                    className="btn-akhiri-yellow"
+                                    onClick={() => {
+                                        setIsRecording(false);
+                                        playAudio("Assets/audio/eti-ibucurhat-audio9-akhiricurhat.mp3");
+                                        
+                                        const handleToFinal = () => {
+                                            audioRef.current.removeEventListener('ended', handleToFinal);
+                                            
+                                            // 1. Pick the Video immediately based on category logic
+                                            const videoDian = "Assets/video/closing-dian.mp4";
+                                            const videoRinggo = "Assets/video/closing-ringgo.mp4";
+                                            
+                                            let pickedVideo = "";
+                                            if (selectedCategory === 'ibu') {
+                                                pickedVideo = videoDian;
+                                            } else if (selectedCategory === 'bapak') {
+                                                pickedVideo = videoRinggo;
+                                            } else {
+                                                // Randomize for Keluarga or Anak
+                                                pickedVideo = Math.random() < 0.5 ? videoDian : videoRinggo;
+                                            }
+                                            
+                                            setFinalVideoUrl(pickedVideo);
+                                            
+                                            // 2. Go straight to video screen
+                                            setScreen('final-video');
+                                        };
+                                        
+                                        audioRef.current.addEventListener('ended', handleToFinal);
+                                    }}
+                                >
+                                    AKHIRI CURHAT
+                                </button>
+                            </div></div>
+                        </div>
+                    )}
+
+                    {screen === 'closing-transition' && (
+                        <div className="screen" key="closing-loading">
+                            <Header />
+                            <div className="intro-transcript-wrapper" style={{ alignItems: 'center', textAlign: 'center', margin: 'auto' }}>
+                                <h2 className="blue-title" style={{ textAlign: 'center', marginBottom: '40px' }}>
+                                    Terima kasih sudah bercerita, {userName}.
+                                </h2>
+                                <p className="privacy-text" style={{ textAlign: 'center', fontSize: '32px', opacity: 0.8 }}>
+                                    Tunggu sebentar ya, i-BU sedang meresapi ceritamu...
+                                </p>
+                                
+                                <div className="progress-bar-container" style={{ marginTop: '40px', width: '400px' }}>
+                                    <div className="progress-fill" style={{ animation: 'loading-fill 4s linear forwards' }} />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {screen === 'final-video' && (
+                        <div className="screen" style={{ padding: 0, background: 'black' }}>
+                            {/* No Header here for full immersion */}
+                            <video 
+                                key={finalVideoUrl} 
+                                className="video-container" 
+                                autoPlay 
+                                playsInline
+                                src={finalVideoUrl}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                onEnded={() => {
+                                    // Optional: return to landing after video ends
+                                    // setTimeout(resetApp, 2000);
+                                }}
+                            />
+                            
+                            {/* Floating Reset Button */}
+                            <button 
+                                className="btn-selanjutnya-outlined"
+                                style={{ 
+                                    position: 'absolute', 
+                                    bottom: '60px', 
+                                    fontSize: '24px', 
+                                    padding: '12px 40px',
+                                    zIndex: 100,
+                                    borderColor: 'white',
+                                    color: 'white'
+                                }}
+                                onClick={resetApp}
+                            >
+                                Selesai
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

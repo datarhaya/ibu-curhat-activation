@@ -1,0 +1,33 @@
+# Cloudflare Pages Headers for Optimal Caching
+
+# Cache videos for 1 year (they don't change)
+/assets/*.mp4
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.webm
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache images for 1 year
+/assets/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.jpeg
+  Cache-Control: public, max-age=31536000, immutable
+
+# Service Worker - check for updates but allow caching
+/service-worker.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Manifest file - cache but revalidate
+/manifest.json
+  Cache-Control: public, max-age=86400, must-revalidate
+
+# HTML - always check for updates
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
