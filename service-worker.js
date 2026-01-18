@@ -1,5 +1,5 @@
 // Service Worker for i-BU Offline PWA
-const CACHE_NAME = 'ibu-curhat-v2'; // Increment version to force update
+const CACHE_NAME = 'ibu-curhat-v3'; // Increment version to force update
 const urlsToCache = [
   '/',
   '/index.html',
