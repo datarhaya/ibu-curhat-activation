@@ -1,5 +1,5 @@
 // Service Worker for i-BU Offline PWA
-const CACHE_NAME = 'ibu-curhat-v1';
+const CACHE_NAME = 'ibu-curhat-v2'; // Increment version to force update
 const urlsToCache = [
   '/',
   '/index.html',
@@ -12,9 +12,10 @@ const urlsToCache = [
   // Audio files
   '/Assets/audio/eti-ibucurhat-audio1-ibuadauntukmu.mp3',
   '/Assets/audio/eti-ibucurhat-audio2-HaloakuiBU.mp3',
-  '/Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3',  // Added - referenced in code
+  '/Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3',  
   '/Assets/audio/eti-ibucurhat-audio4-adahalyangsulitkamuceritakan.mp3',
   '/Assets/audio/eti-ibucurhat-audio6-kenalanduluyuk.mp3',
+  '/Assets/audio/eti-ibucurhat-audio7-sekarangceritakansemua.mp3',
   '/Assets/audio/eti-ibucurhat-audio8-mulairekam.mp3',
   
   // Fonts
@@ -36,21 +37,34 @@ const urlsToCache = [
   'https://unpkg.com/@babel/standalone/babel.min.js',
 ];
 
-// Install event - cache all resources
+// Install event - cache resources with better error handling
 self.addEventListener('install', (event) => {
   console.log('[ServiceWorker] Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('[ServiceWorker] Caching app shell and assets');
-        return cache.addAll(urlsToCache);
+        
+        // Cache files individually to identify failures
+        const cachePromises = urlsToCache.map(url => {
+          return cache.add(url)
+            .then(() => {
+              console.log('[ServiceWorker] Cached:', url);
+            })
+            .catch(error => {
+              console.warn('[ServiceWorker] Failed to cache:', url, error);
+              // Don't fail the whole installation if one file fails
+            });
+        });
+        
+        return Promise.all(cachePromises);
       })
       .then(() => {
         console.log('[ServiceWorker] Installation complete');
         return self.skipWaiting();
       })
       .catch((error) => {
-        console.error('[ServiceWorker] Cache failed:', error);
+        console.error('[ServiceWorker] Installation failed:', error);
       })
   );
 });
@@ -80,7 +94,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Cache hit - return response from cache
+        // Cache hit - return response
         if (response) {
           console.log('[ServiceWorker] Serving from cache:', event.request.url);
           return response;
@@ -88,26 +102,38 @@ self.addEventListener('fetch', (event) => {
         
         // Cache miss - fetch from network
         console.log('[ServiceWorker] Fetching from network:', event.request.url);
-        return fetch(event.request).then((response) => {
-          // Don't cache if not a valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+        return fetch(event.request)
+          .then((response) => {
+            // Check if valid response
+            if (!response || response.status !== 200) {
+              return response;
+            }
+            
+            // Don't cache external scripts from CDN with 'cors' mode
+            if (response.type === 'opaque' || response.type === 'cors') {
+              return response;
+            }
+            
+            // Clone and cache the response
+            const responseToCache = response.clone();
+            
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+            
             return response;
-          }
-          
-          // Clone the response
-          const responseToCache = response.clone();
-          
-          // Cache the fetched resource for future use
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
+          })
+          .catch((error) => {
+            console.error('[ServiceWorker] Fetch failed:', event.request.url, error);
+            // Return a basic offline message for failed requests
+            return new Response('Offline - resource not available', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({
+                'Content-Type': 'text/plain'
+              })
+            });
           });
-          
-          return response;
-        });
-      })
-      .catch((error) => {
-        console.error('[ServiceWorker] Fetch failed:', error);
-        // You could return a custom offline page here if needed
       })
   );
 });
