@@ -37,6 +37,30 @@
             overflow: hidden;
         }
 
+        /* Atmospheric Side Glow */
+        .side-glow-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Ensures you can still click buttons */
+            z-index: 2; /* Sits above background, below content */
+            background: linear-gradient(90deg, 
+                rgba(168, 225, 255, 0.15) 0%, 
+                rgba(168, 225, 255, 0) 20%, 
+                rgba(168, 225, 255, 0) 80%, 
+                rgba(168, 225, 255, 0.15) 100%
+            );
+            animation: atmospheric-pulse 8s ease-in-out infinite alternate;
+        }
+
+        /* Optional: Subtle pulse to make the glow feel "alive" */
+        @keyframes atmospheric-pulse {
+            from { opacity: 0.6; }
+            to { opacity: 1; }
+        }
+
         .app-container { width: 100%; height: 100vh; position: relative; }
 
         .landing-screen { width: 100vw; height: 100vh; position: relative; cursor: pointer; background: black; }
@@ -44,11 +68,32 @@
         .unmute-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); z-index: 10; }
 
         .loading-ai-image { height: 100vh; width: auto; position: absolute; left: 50%; transform: translateX(-50%); z-index: 1; transition: opacity 0.5s ease; }
-        .loading-center-group { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 40px; }
-        .progress-bar-container { width: 280px; height: 30px; border: 1px solid var(--white); padding: 4px; background: transparent; }
-        .progress-fill { height: 100%; background: var(--white); transition: width 0.1s linear; }
-        .loading-text-finished { font-weight: 700; font-size: 40px; letter-spacing: 6px; text-transform: uppercase; }
+        .loading-center-group {
+            position: relative;
+            z-index: 10; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 40px; 
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
+            animation: glow-pulse 4s ease-in-out infinite alternate;
+        }
 
+        .progress-bar-container { 
+            width: 280px; 
+            height: 30px; 
+            border: 1px solid var(--white); 
+            padding: 4px; 
+            background: transparent; 
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        .progress-fill { height: 100%; background: var(--white); transition: width 0.1s linear; box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); }
+        .loading-text-finished { font-weight: 700; font-size: 40px; letter-spacing: 6px; text-transform: uppercase; color: white; text-shadow: 0 0 15px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.2); animation: glow-pulse 2s ease-in-out infinite alternate; }
+            
+        @keyframes glow-pulse {
+            from { filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3)); opacity: 0.8; }
+            to { filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.6)); opacity: 1; }
+        }
         .screen { width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; box-sizing: border-box; position: relative; background-color: var(--bg-dark); }
 
         .header-elements { position: absolute; top: 40px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 20; }
@@ -202,16 +247,16 @@
 
         const TRANSCRIPT_INTRO_2 = [
             { text: "Ada hal", delay: 200 }, { text: " yang sulit kamu ceritakan kepada", delay: 200 }, { text: " siapa pun?", delay: 1200 },
-            { text: "\n\nTarik napas sebentar.......", delay: 1300 }, { text: "\n\nTempat ini", delay: 300 }, { text: " aman buat kamu.", delay: 800 },
+            { text: "\n\nTarik napas sebentar.......", delay: 1100 }, { text: "\n\n", delay: 100 }, { text: "Tempat ini", delay: 300 }, { text: " aman buat kamu.", delay: 800 },
             { text: "\n\ni-BU", delay: 500 }, { text: " siap mendengarkan.", delay: 500 },
         ];
 
-        const TRANSCRIPT_NAME_INPUT = [ { text: "Kenalan Dulu, Yuk", delay: 500 } ];
+        const TRANSCRIPT_NAME_INPUT = [ { text: "", delay: 400 }, { text: "Kenalan Dulu, Yuk", delay: 500 } ];
 
         const TRANSCRIPT_RECORDING_INTRO = [
-            { text: "", delay: 1400 }, { text: "Nggak perlu disusun.", delay: 1000 }, { text: "\nNggak perlu ditahan.", delay: 1000 },
-            { text: "\n\nBicara aja…", delay: 800 }, { text: " seperti kamu sedang", delay: 300 }, { text: " bicara pada diri sendiri.", delay: 1200 },
-            { text: "\n\nKalau kamu berhenti", delay: 400 }, { text: " di tengah jalan,", delay: 600 }, { text: " nggak apa-apa.", delay: 1000 },
+            { text: "", delay: 3000 }, { text: "Nggak perlu disusun.", delay: 1000 }, { text: "\nNggak perlu ditahan.", delay: 1000 },
+            { text: "\n\nBicara aja…", delay: 800 }, { text: " seperti kamu", delay: 400 }, { text: " sedang bicara pada diri sendiri.", delay: 1200 },
+            { text: "\n\nKalau kamu berhenti", delay: 200 }, { text: " di tengah jalan,", delay: 600 }, { text: " nggak apa-apa.", delay: 1000 },
             { text: "\n\nKalau suara kamu gemetar,", delay: 700 }, { text: " itu juga nggak apa-apa.", delay: 1200 },
             { text: "\n\nAmbil waktu sebanyak", delay: 400 }, { text: " yang kamu butuhkan.", delay: 1500 }
         ];
@@ -387,6 +432,7 @@
 
             return (
                 <div className="app-container">
+                    {screen !== 'landing' && <div className="side-glow-overlay" />}
                     <audio ref={audioRef} onEnded={() => setIsVoiceActive(false)} style={{ display: 'none' }} />
 
                     {screen === 'landing' && (
@@ -401,7 +447,7 @@
                             <img src="Assets/image/AI-IBU-loading.png" className="loading-ai-image" style={{ opacity: 0.05 + (loadingProgress/100)*0.95 }} />
                             <div className="loading-center-group">
                                 <img src="Assets/image/IBU-Logo.png" style={{ width: '280px' }} />
-                                {loadingProgress < 100 ? <div className="progress-bar-container"><div className="progress-fill" style={{ width: `${loadingProgress}%` }} /></div> : <div className="loading-text-finished">Ada Untukmu</div>}
+                                {loadingProgress < 100 ? <div className="progress-bar-container"><div className="progress-fill" style={{ width: `${loadingProgress}%` }} /></div> : <div className="loading-text-finished">Ada untukmu</div>}
                             </div>
                         </div>
                     )}
