@@ -12,6 +12,7 @@ const urlsToCache = [
   // Audio files
   '/Assets/audio/eti-ibucurhat-audio1-ibuadauntukmu.mp3',
   '/Assets/audio/eti-ibucurhat-audio2-HaloakuiBU.mp3',
+  '/Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3',  // Added - referenced in code
   '/Assets/audio/eti-ibucurhat-audio4-adahalyangsulitkamuceritakan.mp3',
   '/Assets/audio/eti-ibucurhat-audio6-kenalanduluyuk.mp3',
   '/Assets/audio/eti-ibucurhat-audio8-mulairekam.mp3',
@@ -20,12 +21,14 @@ const urlsToCache = [
   '/Assets/fonts/ITCAvantGardeStd-Bk.woff2',
   '/Assets/fonts/ITCAvantGardeStd-Demi.otf',
   
-  // Images/Icons
+  // Images
   '/Assets/image/IBU-Logo.png',
-  '/Assets/image/ibu-icon.png',      // Add if you have category icons
-  '/Assets/image/bapak-icon.png',    // Add if you have category icons
-  '/Assets/image/anak-icon.png',     // Add if you have category icons
-  '/Assets/image/keluarga-icon.png', // Add if you have category icons
+  '/Assets/image/AI-IBU-loading.png',  // Added - referenced in code
+  '/Assets/image/background.jpg',      // Added - referenced in code
+  '/Assets/image/ibu-icon.png',        // Only add if these exist
+  '/Assets/image/bapak-icon.png',      // Only add if these exist
+  '/Assets/image/anak-icon.png',       // Only add if these exist
+  '/Assets/image/keluarga-icon.png',   // Only add if these exist
   
   // React libraries (from CDN, optional - may not cache well)
   'https://unpkg.com/react@18/umd/react.production.min.js',
