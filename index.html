@@ -271,8 +271,8 @@
                 if (screen === 'closing-transition') {
                     // 1. Pick the Video based on Category
                     // Note: Check if your folder is "assets" or "Assets" - using lowercase to match your landing video
-                    const videoDian = "Assets/video/closing-dian.mp4"; 
-                    const videoRinggo = "Assets/video/closing-ringgo.mp4";
+                    const videoDian = "https://r2-video-proxy.data-456.workers.dev/closing-dian.mp4";
+                    const videoRinggo = "https://r2-video-proxy.data-456.workers.dev/closing-ringgo.mp4";
                     
                     let pickedVideo = "";
                     if (selectedCategory === 'ibu') {
@@ -391,7 +391,7 @@
 
                     {screen === 'landing' && (
                         <div className="landing-screen" onClick={() => showUnmuteOverlay ? (setShowUnmuteOverlay(false), landingVideoRef.current.muted=false) : startLoadingSequence()}>
-                            <video ref={landingVideoRef} className="video-placeholder" src="Assets/ETI-motion-poster.mp4" autoPlay loop muted playsInline />
+                            <video ref={landingVideoRef} className="video-placeholder" src="https://r2-video-proxy.data-456.workers.dev/ETI-motion-poster.mp4" autoPlay loop muted playsInline />
                             {showUnmuteOverlay && <div className="unmute-overlay"><p style={{ letterSpacing: '2px', fontWeight: '300' }}>🔊 Ketuk untuk dengar suara</p></div>}
                         </div>
                     )}
@@ -543,8 +543,8 @@
                                             audioRef.current.removeEventListener('ended', handleToFinal);
                                             
                                             // 1. Pick the Video immediately based on category logic
-                                            const videoDian = "Assets/video/closing-dian.mp4";
-                                            const videoRinggo = "Assets/video/closing-ringgo.mp4";
+                                            const videoDian = "https://r2-video-proxy.data-456.workers.dev/closing-dian.mp4";
+                                            const videoRinggo = "https://r2-video-proxy.data-456.workers.dev/closing-ringgo.mp4";
                                             
                                             let pickedVideo = "";
                                             if (selectedCategory === 'ibu') {

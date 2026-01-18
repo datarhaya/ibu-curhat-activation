@@ -5,9 +5,9 @@ const urlsToCache = [
   '/index.html',
   
   // Videos
-  '/Assets/ETI-motion-poster.mp4',
-  '/Assets/video/closing-dian.mp4',
-  '/Assets/video/closing-ringgo.mp4',
+  'https://r2-video-proxy.data-456.workers.dev/ETI-motion-poster.mp4',
+  'https://r2-video-proxy.data-456.workers.dev/closing-dian.mp4',
+  'https://r2-video-proxy.data-456.workers.dev/closing-ringgo.mp4',
   
   // Audio files
   '/Assets/audio/eti-ibucurhat-audio1-ibuadauntukmu.mp3',
