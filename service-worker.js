@@ -10,28 +10,28 @@ const urlsToCache = [
   'https://r2-video-proxy.data-456.workers.dev/closing-ringgo.mp4',
   
   // Audio files (all 9 files you have)
-  '/Assets/audio/eti-ibucurhat-audio1-ibuadauntukmu.mp3',
-  '/Assets/audio/eti-ibucurhat-audio2-HaloakuiBU.mp3',
-  '/Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3',
-  '/Assets/audio/eti-ibucurhat-audio4-adahalyangsulitkamuceritakan.mp3',
-  '/Assets/audio/eti-ibucurhat-audio5-mulaicurhat.mp3',
-  '/Assets/audio/eti-ibucurhat-audio6-kenalanduluyuk.mp3',
-  '/Assets/audio/eti-ibucurhat-audio7-sekarangceritakansemua.mp3',
-  '/Assets/audio/eti-ibucurhat-audio8-mulairekam.mp3',
-  '/Assets/audio/eti-ibucurhat-audio9-akhiricurhat.mp3',
+  'https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio1-ibuadauntukmu.mp3',
+  'https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio2-HaloakuiBU.mp3',
+  'https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio3-selanjutnya.mp3',
+  'https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio4-adahalyangsulitkamuceritakan.mp3',
+  'https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio5-mulaicurhat.mp3',
+  'https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio6-kenalanduluyuk.mp3',
+  'https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio7-sekarangceritakansemua.mp3',
+  'https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio8-mulairekam.mp3',
+  'https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio9-akhiricurhat.mp3',
   
   // Fonts (2 files)
-  '/Assets/fonts/ITCAvantGardeStd-Bk.woff2',
-  '/Assets/fonts/ITCAvantGardeStd-Demi.otf',
+  'https://r2-video-proxy.data-456.workers.dev/fonts/ITCAvantGardeStd-Bk.woff2',
+  'https://r2-video-proxy.data-456.workers.dev/fonts/ITCAvantGardeStd-Demi.otf',
   
   // Images (7 files)
-  '/Assets/image/AI-IBU-loading.png',
-  '/Assets/image/IBU-Logo.png',
-  '/Assets/image/background.jpg',
-  '/Assets/image/icon-anak.png',
-  '/Assets/image/icon-bapak.png',
-  '/Assets/image/icon-ibu.png',
-  '/Assets/image/icon-keluarga.png',
+  'https://r2-video-proxy.data-456.workers.dev/image/AI-IBU-loading.png',
+  'https://r2-video-proxy.data-456.workers.dev/image/IBU-Logo.png',
+  'https://r2-video-proxy.data-456.workers.dev/image/background.jpg',
+  'https://r2-video-proxy.data-456.workers.dev/image/icon-anak.png',
+  'https://r2-video-proxy.data-456.workers.dev/image/icon-bapak.png',
+  'https://r2-video-proxy.data-456.workers.dev/image/icon-ibu.png',
+  'https://r2-video-proxy.data-456.workers.dev/image/icon-keluarga.png',
   
   // React CDN libraries (optional - browser may cache these anyway)
   'https://unpkg.com/react@18/umd/react.production.min.js',
