@@ -283,6 +283,68 @@
             transition: color 0.3s ease;
         }
 
+        .name-content-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .keyboard-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1vh;
+            margin-top: 5vh;
+            width: 100%;
+            max-width: 80%;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: .6vh;
+        }
+
+        .key {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            min-width: 4vh;
+            height: 4vh;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s ease;
+        }
+
+        .key:active {
+            background: var(--accent-blue);
+            transform: scale(0.95);
+        }
+
+        /* Special styling for Clear and Backspace */
+        .key.special {
+            min-width: 80px;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* Space Bar styling */
+        .key.space-bar {
+            width: 350px; /* Long bar style */
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .key.backspace {
+            grid-column: span 2; /* Makes the backspace button wider */
+            background: rgba(255, 255, 255, 0.05);
+        }
+
         .fade-in { animation: fadeIn 1s forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -550,7 +612,6 @@
                         <div className="screen" key="name-screen">
                             <Header />
                             <div className="name-input-container">
-                                {/* 1. Dynamic Title: Swaps from prompt to Greeting */}
                                 <h1 className={`identitas-title ${transcriptFinished ? 'finished' : ''}`}>
                                     {!showNameGreeting ? (
                                         <ManualTypewriter 
@@ -562,10 +623,9 @@
                                     )}
                                 </h1>
 
-                                {/* 2. Hide input fields once button is clicked to focus on the greeting */}
                                 {transcriptFinished && !showNameGreeting && (
-                                    <div className="fade-in" style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <p className="identitas-subtext" style={{ marginTop: '20px', marginBottom: '40px' }}>
+                                    <div className="fade-in name-content-wrapper">
+                                        <p className="identitas-subtext">
                                             Kamu lebih nyaman<br/>dipanggil apa?
                                         </p>
                                         
@@ -575,25 +635,48 @@
                                             placeholder="ISI NAMA KAMU..." 
                                             value={userName} 
                                             maxLength={15} 
-                                            onChange={(e) => setUserName(e.target.value)} 
-                                            autoFocus 
+                                            readOnly 
                                         />
+
+                                        {/* --- IMPROVED KEYBOARD --- */}
+                                        <div className="keyboard-container">
+                                            {/* Row 1 */}
+                                            <div className="keyboard-row">
+                                                {["Q","W","E","R","T","Y","U","I","O","P"].map(char => (
+                                                    <button key={char} className="key" onClick={() => userName.length < 15 && setUserName(prev => prev + char)}>{char}</button>
+                                                ))}
+                                            </div>
+                                            {/* Row 2 */}
+                                            <div className="keyboard-row">
+                                                {["A","S","D","F","G","H","J","K","L"].map(char => (
+                                                    <button key={char} className="key" onClick={() => userName.length < 15 && setUserName(prev => prev + char)}>{char}</button>
+                                                ))}
+                                            </div>
+                                            {/* Row 3 - Z is now here */}
+                                            <div className="keyboard-row">
+                                                <button className="key special" onClick={() => setUserName("")}>CLEAR</button>
+                                                {["Z","X","C","V","B","N","M"].map(char => (
+                                                    <button key={char} className="key" onClick={() => userName.length < 15 && setUserName(prev => prev + char)}>{char}</button>
+                                                ))}
+                                                <button className="key special" onClick={() => setUserName(prev => prev.slice(0, -1))}>⌫</button>
+                                            </div>
+                                            {/* Row 4 - Space Bar */}
+                                            <div className="keyboard-row">
+                                                <button className="key space-bar" onClick={() => userName.length < 15 && setUserName(prev => prev + " ")}>SPACE</button>
+                                            </div>
+                                        </div>
                                         
                                         {userName.trim().length > 0 && (
                                             <button 
                                                 className="btn-selanjutnya-outlined" 
-                                                style={{ marginTop: '40px' }} 
+                                                style={{ marginTop: '5vh' }} 
                                                 onClick={() => {
-                                                    // Trigger the greeting text immediately
                                                     setShowNameGreeting(true);
-                                                    
                                                     playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio3-selanjutnya.mp3");
                                                     
                                                     const end = () => {
                                                         audioRef.current.removeEventListener('ended', end);
                                                         setTimeout(() => {
-                                                            // Reset greeting state for next time (if reset happens) 
-                                                            // and move to next screen
                                                             setScreen('data-confirmation');
                                                             setShowNameGreeting(false); 
                                                         }, 1000);
@@ -767,6 +850,32 @@
             });
         });
     }
+    </script>
+    <script>
+        const inputField = document.getElementById('virtual-input');
+        const keys = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
+
+        const keyboardContainer = document.getElementById('keyboard');
+
+        // 1. Create Letter Keys
+        keys.forEach(key => {
+            const btn = document.createElement('div');
+            btn.classList.add('key');
+            btn.innerText = key;
+            btn.onclick = () => {
+                if (inputField.value.length < 15) inputField.value += key;
+            };
+            keyboardContainer.appendChild(btn);
+        });
+
+        // 2. Add Backspace
+        const backspace = document.createElement('div');
+        backspace.classList.add('key', 'backspace');
+        backspace.innerText = "⌫";
+        backspace.onclick = () => {
+            inputField.value = inputField.value.slice(0, -1);
+        };
+        keyboardContainer.appendChild(backspace);
     </script>
 </body>
 </html>
