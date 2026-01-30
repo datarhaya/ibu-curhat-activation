@@ -117,7 +117,7 @@
             position: relative; 
         }
 
-        .header-elements { position: absolute; top: 6vw; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; z-index: 20; }
+        .header-elements { position: absolute; top: 6vw; left: 6vw; right: 6vw; display: flex; justify-content: space-between; align-items: center; z-index: 20; }
         .header-left { display: flex; flex-direction: column; gap: 8px; margin: 0; }
         .powered-by { font-size: 2.5rem; font-weight: 700; letter-spacing: 0.5px; }
         .btn-reset { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 4px 12px; border-radius: 4px; font-size: 14px; cursor: pointer; text-transform: uppercase; width: fit-content; }
@@ -366,11 +366,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1vw; /* Space between the two logos */
+            gap: 3vw; /* Space between the two logos */
         }
 
         .sponsor-img-1 {
-            height: 9vw; /* Control size based on your kiosk screen */
+            height: 7vw; /* Control size based on your kiosk screen */
             width: auto;
             object-fit: contain;
 
@@ -378,7 +378,7 @@
         }
 
         .sponsor-img-2 {
-            height: 12vw; /* Control size based on your kiosk screen */
+            height: 7vw; /* Control size based on your kiosk screen */
             width: auto;
             object-fit: contain;
 
@@ -636,26 +636,25 @@
 
                     {screen === 'intro1' && (
                         <div className="screen" key="intro1">
-                            <div className="intro-transcript-wrapper">
-                                <p className="transcript-text">
-                                    <ManualTypewriter words={TRANSCRIPT_INTRO_1} onComplete={() => setTranscriptFinished(true)} />
-                                </p>
-                            </div>
-
-                            {transcriptFinished && !isVoiceActive && (
-                                <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                    <button className="btn-selanjutnya-outlined" onClick={() => { /* ... existing onClick logic ... */ }}>
-                                        Selanjutnya
-                                    </button>
-                                </div>
-                            )}
+                            <div className="intro-transcript-wrapper"><p className="transcript-text"><ManualTypewriter words={TRANSCRIPT_INTRO_1} onComplete={() => setTranscriptFinished(true)} /></p></div>
+                                {transcriptFinished && !isVoiceActive && <div className="fade-in">
+                                <button className="btn-selanjutnya-outlined" 
+                                        onClick={() => { 
+                                            setTranscriptFinished(false); 
+                                            playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio3-selanjutnya.mp3"); 
+                                            const end = () => { audioRef.current.removeEventListener('ended', end); setTimeout(() => { setScreen('intro2'); playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio4-adahalyangsulitkamuceritakan.mp3"); }, 1000); }; 
+                                            audioRef.current.addEventListener('ended', end); 
+                                        }}>
+                                    Selanjutnya
+                                </button>
+                            </div>}
 
                             {/* --- SPONSOR SECTION --- */}
                             <div className="sponsor-footer fade-in">
-                                <p className="sponsor-label">Sponsored by:</p>
+                                <p className="sponsor-label">Supported by:</p>
                                 <div className="sponsor-logos">
+                                    <img src="https://r2-video-proxy.data-456.workers.dev/image/logo-ramayana_crop.png" alt="Ramayana" className="sponsor-img-2" />
                                     <img src="https://r2-video-proxy.data-456.workers.dev/image/logo-ciplaz-jatinegara.png" alt="Cityplaza Jatinegara" className="sponsor-img-1" />
-                                    <img src="https://r2-video-proxy.data-456.workers.dev/image/logo-ramayana.png" alt="Ramayana" className="sponsor-img-2" />
                                 </div>
                             </div>
                         </div>
