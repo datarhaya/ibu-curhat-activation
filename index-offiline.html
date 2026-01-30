@@ -7,11 +7,11 @@
     <title>i-BU - Teman Curhatmu</title>
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="<!-- manifest.json removed for offline -->">
     
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="libs/react.production.min.js"></script>
+    <script src="libs/react-dom.production.min.js"></script>
+    <script src="libs/babel.min.js"></script>
     
     <style>
         :root {
@@ -25,13 +25,13 @@
         
         @font-face {
             font-family: 'AvantGarde';
-            src: url('https://r2-video-proxy.data-456.workers.dev/fonts/ITCAvantGardeStd-Bk.woff2') format('woff2');
+            src: url('Assets/fonts/ITCAvantGardeStd-Bk.woff2') format('woff2');
             font-weight: 400;
         }
 
         @font-face {
             font-family: 'AvantGarde';
-            src: url('https://r2-video-proxy.data-456.workers.dev/fonts/ITCAvantGardeStd-Demi.otf') format('opentype');
+            src: url('Assets/fonts/ITCAvantGardeStd-Demi.otf') format('opentype');
             font-weight: 700;
         }
         
@@ -40,7 +40,7 @@
             font-family: 'AvantGarde', sans-serif;
             background-color: var(--bg-dark);
             /* Change fixed to cover to ensure no background gaps */
-            background: url('https://r2-video-proxy.data-456.workers.dev/image/background.jpg') no-repeat center center fixed;
+            background: url('Assets/image/background.jpg') no-repeat center center fixed;
             background-size: cover;
             color: var(--white);
             height: 100vh; width: 100vw;
@@ -117,11 +117,11 @@
             position: relative; 
         }
 
-        .header-elements { position: absolute; top: 6vw; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; z-index: 20; }
-        .header-left { display: flex; flex-direction: column; gap: 8px; margin: 0; }
-        .powered-by { font-size: 2.5rem; font-weight: 700; letter-spacing: 0.5px; }
+        .header-elements { position: absolute; top: 40px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 20; }
+        .header-left { display: flex; flex-direction: column; gap: 8px; }
+        .powered-by { font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
         .btn-reset { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 4px 12px; border-radius: 4px; font-size: 14px; cursor: pointer; text-transform: uppercase; width: fit-content; }
-        .top-logo { width: 16vw; height: auto; cursor: pointer;}
+        .top-logo { width: 120px; height: auto; cursor: pointer; }
 
         .intro-transcript-wrapper, .name-input-container { 
             width: 100%; 
@@ -345,46 +345,6 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .sponsor-footer {
-            position: absolute;
-            bottom: 5vh; /* Adjust height from bottom */
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .sponsor-label {
-            color: rgba(255, 255, 255, 0.6); /* Subtle white */
-            font-size: 2rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .sponsor-logos {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1vw; /* Space between the two logos */
-        }
-
-        .sponsor-img-1 {
-            height: 9vw; /* Control size based on your kiosk screen */
-            width: auto;
-            object-fit: contain;
-
-            opacity: 0.8;
-        }
-
-        .sponsor-img-2 {
-            height: 12vw; /* Control size based on your kiosk screen */
-            width: auto;
-            object-fit: contain;
-
-            opacity: 0.8;
-        }
-
         .fade-in { animation: fadeIn 1s forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -470,8 +430,8 @@
                 if (screen === 'closing-transition') {
                     // 1. Pick the Video based on Category
                     // Note: Check if your folder is "https://r2-video-proxy.data-456.workers.dev" or "https://r2-video-proxy.data-456.workers.dev" - using lowercase to match your landing video
-                    const videoDian = "https://r2-video-proxy.data-456.workers.dev/closing-dian.mp4";
-                    const videoRinggo = "https://r2-video-proxy.data-456.workers.dev/closing-ringgo.mp4";
+                    const videoDian = "Assets/video/closing-dian.mp4";
+                    const videoRinggo = "Assets/video/closing-ringgo.mp4";
                     
                     let pickedVideo = "";
                     if (selectedCategory === 'ibu') {
@@ -520,18 +480,18 @@
                 if (screen === 'intro1') {
                     setTranscriptFinished(false);
                     setScreen('intro2');
-                    playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio4-adahalyangsulitkamuceritakan.mp3");
+                    playAudio("Assets/audio/eti-ibucurhat-audio4-adahalyangsulitkamuceritakan.mp3");
                 } else if (screen === 'intro2') {
                     setTranscriptFinished(false);
                     setScreen('name-input');
-                    playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio6-kenalanduluyuk.mp3");
+                    playAudio("Assets/audio/eti-ibucurhat-audio6-kenalanduluyuk.mp3");
                 } else if (screen === 'name-input' && userName.trim()) {
                     setScreen('data-confirmation');
                 } else if (screen === 'data-confirmation') {
                     setScreen('category-selection');
                 } else if (screen === 'pre-record') {
                     setScreen('record-page');
-                    playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio8-mulairekam.mp3");
+                    playAudio("Assets/audio/eti-ibucurhat-audio8-mulairekam.mp3");
                     setIsRecording(true);
                 }
             };
@@ -544,8 +504,8 @@
                     setLoadingProgress(prog);
                     if (prog >= 100) {
                         clearInterval(interval);
-                        playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio1-ibuadauntukmu.mp3");
-                        setTimeout(() => { setScreen('intro1'); playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio2-HaloakuiBU.mp3"); }, 3000);
+                        playAudio("Assets/audio/eti-ibucurhat-audio1-ibuadauntukmu.mp3");
+                        setTimeout(() => { setScreen('intro1'); playAudio("Assets/audio/eti-ibucurhat-audio2-HaloakuiBU.mp3"); }, 3000);
                     }
                 }, 50);
             };
@@ -576,7 +536,7 @@
                         </div>
                     </div>
                     <img 
-                        src="https://r2-video-proxy.data-456.workers.dev/image/IBU-Logo.png" 
+                        src="Assets/image/IBU-Logo.png" 
                         className="top-logo" 
                         alt="Logo" 
                         onClick={skipToNext} 
@@ -606,7 +566,7 @@
                         <video 
                             ref={landingVideoRef} 
                             className="video-placeholder" 
-                            src="https://r2-video-proxy.data-456.workers.dev/ETI-motion-poster.mp4" 
+                            src="Assets/ETI-motion-poster.mp4" 
                             autoPlay 
                             loop 
                             muted 
@@ -624,9 +584,9 @@
 
                     {screen === 'loading-page' && (
                         <div className="screen">
-                            <img src="https://r2-video-proxy.data-456.workers.dev/image/AI-IBU-loading.png" className="loading-ai-image" style={{ opacity: 0.05 + (loadingProgress/100)*0.95 }} />
+                            <img src="Assets/image/AI-IBU-loading.png" className="loading-ai-image" style={{ opacity: 0.05 + (loadingProgress/100)*0.95 }} />
                             <div className="loading-center-group">
-                                <img src="https://r2-video-proxy.data-456.workers.dev/image/IBU-Logo.png" style={{ width: '280px' }} />
+                                <img src="Assets/image/IBU-Logo.png" style={{ width: '280px' }} />
                                 {loadingProgress < 100 ? <div className="progress-bar-container"><div className="progress-fill" style={{ width: `${loadingProgress}%` }} /></div> : <div className="loading-text-finished">Ada untukmu</div>}
                             </div>
                         </div>
@@ -636,35 +596,15 @@
 
                     {screen === 'intro1' && (
                         <div className="screen" key="intro1">
-                            <div className="intro-transcript-wrapper">
-                                <p className="transcript-text">
-                                    <ManualTypewriter words={TRANSCRIPT_INTRO_1} onComplete={() => setTranscriptFinished(true)} />
-                                </p>
-                            </div>
-
-                            {transcriptFinished && !isVoiceActive && (
-                                <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                    <button className="btn-selanjutnya-outlined" onClick={() => { /* ... existing onClick logic ... */ }}>
-                                        Selanjutnya
-                                    </button>
-                                </div>
-                            )}
-
-                            {/* --- SPONSOR SECTION --- */}
-                            <div className="sponsor-footer fade-in">
-                                <p className="sponsor-label">Sponsored by:</p>
-                                <div className="sponsor-logos">
-                                    <img src="https://r2-video-proxy.data-456.workers.dev/image/logo-ciplaz-jatinegara.png" alt="Cityplaza Jatinegara" className="sponsor-img-1" />
-                                    <img src="https://r2-video-proxy.data-456.workers.dev/image/logo-ramayana.png" alt="Ramayana" className="sponsor-img-2" />
-                                </div>
-                            </div>
+                            <div className="intro-transcript-wrapper"><p className="transcript-text"><ManualTypewriter words={TRANSCRIPT_INTRO_1} onComplete={() => setTranscriptFinished(true)} /></p></div>
+                            {transcriptFinished && !isVoiceActive && <div className="fade-in"><button className="btn-selanjutnya-outlined" onClick={() => { setTranscriptFinished(false); playAudio("Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3"); const end = () => { audioRef.current.removeEventListener('ended', end); setTimeout(() => { setScreen('intro2'); playAudio("Assets/audio/eti-ibucurhat-audio4-adahalyangsulitkamuceritakan.mp3"); }, 1000); }; audioRef.current.addEventListener('ended', end); }}>Selanjutnya</button></div>}
                         </div>
                     )}
 
                     {screen === 'intro2' && (
                         <div className="screen" key="intro2">
                             <div className="intro-transcript-wrapper"><p className="transcript-text"><ManualTypewriter words={TRANSCRIPT_INTRO_2} onComplete={() => setTranscriptFinished(true)} /></p></div>
-                            {transcriptFinished && !isVoiceActive && <button className="btn-selanjutnya-outlined" onClick={() => { setTranscriptFinished(false); playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio3-selanjutnya.mp3"); const end = () => { audioRef.current.removeEventListener('ended', end); setTimeout(() => { setScreen('name-input'); setTranscriptFinished(false); playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio6-kenalanduluyuk.mp3"); }, 1000); }; audioRef.current.addEventListener('ended', end); }}>Selanjutnya</button>}
+                            {transcriptFinished && !isVoiceActive && <button className="btn-selanjutnya-outlined" onClick={() => { setTranscriptFinished(false); playAudio("Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3"); const end = () => { audioRef.current.removeEventListener('ended', end); setTimeout(() => { setScreen('name-input'); setTranscriptFinished(false); playAudio("Assets/audio/eti-ibucurhat-audio6-kenalanduluyuk.mp3"); }, 1000); }; audioRef.current.addEventListener('ended', end); }}>Selanjutnya</button>}
                         </div>
                     )}
 
@@ -732,7 +672,7 @@
                                                 style={{ marginTop: '5vh' }} 
                                                 onClick={() => {
                                                     setShowNameGreeting(true);
-                                                    playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio3-selanjutnya.mp3");
+                                                    playAudio("Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3");
                                                     
                                                     const end = () => {
                                                         audioRef.current.removeEventListener('ended', end);
@@ -756,7 +696,7 @@
                     {screen === 'data-confirmation' && (
                         <div className="screen" key="confirm-screen">
                             <div className="intro-transcript-wrapper"><h2 className="name-greeting fade-in">Hai {userName},</h2><p className="privacy-text fade-in" style={{ animationDelay: '0.3s' }}>Data ini hanya untuk membuat<br/>pengalamanmu terasa lebih personal.<br/><br/>Ceritamu tetap milikmu sepenuhnya.</p></div>
-                            <div className="fade-in" style={{ animationDelay: '0.6s' }}><button className="btn-selanjutnya-outlined" onClick={() => { playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio5-mulaicurhat.mp3"); const end = () => { audioRef.current.removeEventListener('ended', end); setTimeout(() => setScreen('category-selection'), 500); }; audioRef.current.addEventListener('ended', end); }}>Mulai Curhat</button></div>
+                            <div className="fade-in" style={{ animationDelay: '0.6s' }}><button className="btn-selanjutnya-outlined" onClick={() => { playAudio("Assets/audio/eti-ibucurhat-audio5-mulaicurhat.mp3"); const end = () => { audioRef.current.removeEventListener('ended', end); setTimeout(() => setScreen('category-selection'), 500); }; audioRef.current.addEventListener('ended', end); }}>Mulai Curhat</button></div>
                         </div>
                     )}
 
@@ -766,8 +706,8 @@
                                 <h2 className="category-title">{userName}, kamu mau<br/>curhat tentang siapa?</h2>
                                 <div className="category-grid">
                                     {['ibu', 'bapak', 'anak', 'keluarga'].map(id => (
-                                        <div key={id} className="category-card" onClick={() => { setSelectedCategory(id); playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio7-sekarangceritakansemua.mp3"); setScreen('pre-record'); }}>
-                                            <img src={`https://r2-video-proxy.data-456.workers.dev/image/icon-${id}.png`} className="category-icon" />
+                                        <div key={id} className="category-card" onClick={() => { setSelectedCategory(id); playAudio("Assets/audio/eti-ibucurhat-audio7-sekarangceritakansemua.mp3"); setScreen('pre-record'); }}>
+                                            <img src={`Assets/image/icon-${id}.png`} className="category-icon" />
                                             <span className="category-label">{id}</span>
                                         </div>
                                     ))}
@@ -782,7 +722,7 @@
                             <div className="pre-record-content-wrapper"><div className="pre-record-container fade-in">
                                 <h1 className="pre-record-title">Sekarang, kamu ceritain aja ya :)</h1>
                                 <div className="pre-record-box"><p className="pre-record-transcript"><ManualTypewriter words={TRANSCRIPT_RECORDING_INTRO} onComplete={() => setIsVoiceActive(false)} /></p></div>
-                                <div style={{ minHeight: '160px', marginTop: '40px' }}>{!isVoiceActive && <button className="btn-selanjutnya-outlined" onClick={() => { playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio3-selanjutnya.mp3"); const end = () => { audioRef.current.removeEventListener('ended', end); setScreen('record-page'); playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio8-mulairekam.mp3"); setIsRecording(true); }; audioRef.current.addEventListener('ended', end); }}>Selanjutnya</button>}</div>
+                                <div style={{ minHeight: '160px', marginTop: '40px' }}>{!isVoiceActive && <button className="btn-selanjutnya-outlined" onClick={() => { playAudio("Assets/audio/eti-ibucurhat-audio3-selanjutnya.mp3"); const end = () => { audioRef.current.removeEventListener('ended', end); setScreen('record-page'); playAudio("Assets/audio/eti-ibucurhat-audio8-mulairekam.mp3"); setIsRecording(true); }; audioRef.current.addEventListener('ended', end); }}>Selanjutnya</button>}</div>
                             </div></div>
                         </div>
                     )}
@@ -798,20 +738,20 @@
                                     <div className="ripple"></div>
                                     <div className="ripple"></div>
                                     <div className="ai-core">
-                                        <img src="https://r2-video-proxy.data-456.workers.dev/image/IBU-Logo.png" style={{ width: '150px' }} /><div className="core-text-block"><p className="listening-text">Mendengarkan<br/>Curhat Kamu</p></div></div></div>
+                                        <img src="Assets/image/IBU-Logo.png" style={{ width: '150px' }} /><div className="core-text-block"><p className="listening-text">Mendengarkan<br/>Curhat Kamu</p></div></div></div>
                                 <div className="timer">{formatTime(seconds)}</div>
                                 <button 
                                     className="btn-akhiri-yellow"
                                     onClick={() => {
                                         setIsRecording(false);
-                                        playAudio("https://r2-video-proxy.data-456.workers.dev/audio/eti-ibucurhat-audio9-akhiricurhat.mp3");
+                                        playAudio("Assets/audio/eti-ibucurhat-audio9-akhiricurhat.mp3");
                                         
                                         const handleToFinal = () => {
                                             audioRef.current.removeEventListener('ended', handleToFinal);
                                             
                                             // 1. Pick the Video immediately based on category logic
-                                            const videoDian = "https://r2-video-proxy.data-456.workers.dev/closing-dian.mp4";
-                                            const videoRinggo = "https://r2-video-proxy.data-456.workers.dev/closing-ringgo.mp4";
+                                            const videoDian = "Assets/video/closing-dian.mp4";
+                                            const videoRinggo = "Assets/video/closing-ringgo.mp4";
                                             
                                             let pickedVideo = "";
                                             if (selectedCategory === 'ibu') {
